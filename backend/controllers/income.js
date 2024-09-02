@@ -49,3 +49,24 @@ exports.deleteIncome = async(req, res) =>{
         })
     
 }
+exports.updateIncome = async (req, res) => {
+    const { id } = req.params;
+    const { title, amount, category, description, date } = req.body;
+
+    try {
+        // Find and update the income record
+        const updatedIncome = await IncomeSchema.findByIdAndUpdate(
+            id,
+            { title, amount, category, description, date },
+            { new: true, runValidators: true } // Options: return the updated document and run schema validation
+        );
+
+        if (!updatedIncome) {
+            return res.status(404).json({ message: 'Income not found' });
+        }
+
+        res.status(200).json(updatedIncome);
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
